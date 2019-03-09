@@ -2,6 +2,9 @@ var blockSize = 40;
 var velocityX = 1;
 var velocityY = 0;
 
+var appleX = 0;
+var appleY = 0;
+
 var snake  = [];
 
 function keyPush(evt){
@@ -28,13 +31,24 @@ window.onload = function() {
     snake = initializeSnake();
 
     document.addEventListener("keydown", keyPush);
-    var framesPerSecond = 10;
+    var framesPerSecond = 5;
     setInterval(main, 1000/framesPerSecond);
 }
 
 function main(){
     moveSnake();
+    if(snakeGetApple()){
+        getApple();
+    }
     drawEverything();
+}
+
+function snakeGetApple(){
+    if(snake[0].x == appleX && snake[0].y == appleY){
+        return true;
+    } else {
+        return false;
+    }
 }
 
 function drawEverything(){
@@ -42,11 +56,21 @@ function drawEverything(){
     // colorRect(100, 100, blockSize, blockSize, 'green');
     // colorRect(canvas.width/2, canvas.height/2, blockSize, blockSize, 'green');
     drawSnake(snake);
+    drawApple();
 }
 
 function colorRect(leftX, topY, width, height, drawColor){
     canvasContext.fillStyle = drawColor;
     canvasContext.fillRect(leftX, topY, width, height);
+}
+
+function drawApple(){
+    colorRect(appleX, appleY, blockSize, blockSize, 'red');
+}
+
+function getApple(){
+    appleX = Math.floor(Math.random() * canvas.width / blockSize) * blockSize;
+    appleY = Math.floor(Math.random() * canvas.height / blockSize) * blockSize;
 }
 
 function moveSnake(){
@@ -70,14 +94,9 @@ function moveSnake(){
 }
 
 function drawSnake(snake){
-    // console.log('drawing snake');
-    // console.log(snake[0].x);
     for(var i=0;i<snake.length;i++){
-        // console.log(i);
         colorRect(snake[i].x, snake[i].y, blockSize, blockSize, 'green');
-        
     }
-    
 }
 
 function initializeSnake(){
@@ -85,6 +104,5 @@ function initializeSnake(){
     startX = Math.floor(Math.random() * canvas.width / blockSize) * blockSize;
     startY = Math.floor(Math.random() * canvas.height / blockSize) * blockSize;
     snakeBody.push({x:startX, y:startY});
-    // snakeBody.push({x:100, y:100});
     return snakeBody;
 }
