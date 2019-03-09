@@ -4,12 +4,30 @@ var velocityY = 0;
 
 var snake  = [];
 
+function keyPush(evt){
+    switch(evt.keyCode){
+        case 37:
+        velocityX = -1; velocityY = 0;
+        break;
+        case 38:
+        velocityX = 0; velocityY = -1;
+        break;
+        case 39:
+        velocityX = 1; velocityY = 0;
+        break;
+        case 40:
+        velocityX = 0; velocityY = 1;
+        break;
+    }
+}
+
 
 window.onload = function() {
     canvas = document.getElementById('snake_game');
     canvasContext = canvas.getContext('2d');
     snake = initializeSnake();
 
+    document.addEventListener("keydown", keyPush);
     var framesPerSecond = 10;
     setInterval(main, 1000/framesPerSecond);
 }
