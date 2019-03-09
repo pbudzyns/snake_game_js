@@ -14,15 +14,19 @@ var snake  = [];
 function keyPush(evt){
     switch(evt.keyCode){
         case 37:
+        if(velocityX == 1) {break;}
         velocityX = -1; velocityY = 0;
         break;
         case 38:
+        if(velocityY == 1) {break;}
         velocityX = 0; velocityY = -1;
         break;
         case 39:
+        if(velocityX == -1) {break;}
         velocityX = 1; velocityY = 0;
         break;
         case 40:
+        if(velocityY == -1) {break;}
         velocityX = 0; velocityY = 1;
         break;
     }
@@ -81,8 +85,17 @@ function drawApple(){
 }
 
 function getNewApple(){
-    appleX = Math.floor(Math.random() * canvas.width / blockSize) * blockSize;
-    appleY = Math.floor(Math.random() * canvas.height / blockSize) * blockSize;
+    var keepLooking = true;
+    while(keepLooking){
+        appleX = Math.floor(Math.random() * canvas.width / blockSize) * blockSize;
+        appleY = Math.floor(Math.random() * canvas.height / blockSize) * blockSize;
+        keepLooking = false;
+        for(var i=0; i<snake.length; i++){
+            if(snake[i].x == appleX && snake[i].y == appleY){
+                keepLooking = true;
+            }
+        }
+    }
 }
 
 function moveSnake(){
@@ -115,7 +128,7 @@ function moveSnake(){
 
 function drawSnake(snake){
     for(var i=0;i<snake.length;i++){
-        colorRect(snake[i].x, snake[i].y, blockSize, blockSize, 'green');
+        colorRect(snake[i].x, snake[i].y, blockSize-2, blockSize-2, 'green');
     }
 }
 
