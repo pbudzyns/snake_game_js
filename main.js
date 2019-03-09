@@ -11,6 +11,11 @@ var appleY = 0;
 
 var snake  = [];
 
+var currentScore = 0;
+var bestScore = 0;
+var globalTime = 0;
+var roundTime = 0;
+
 function keyPush(evt){
     switch(evt.keyCode){
         case 37:
@@ -36,6 +41,11 @@ function keyPush(evt){
 window.onload = function() {
     canvas = document.getElementById('snake_game');
     canvasContext = canvas.getContext('2d');
+    scoreBoard = document.getElementById('score_board');
+    scoreBoardContext = scoreBoard.getContext('2d');
+    var d = new Date();
+    globalTime = d.getTime();
+    roundTime = d.getTime();
     snake = initializeSnake();
 
     document.addEventListener("keydown", keyPush);
@@ -47,6 +57,7 @@ function main(){
     moveSnake();
     if(snakeGetApple()){
         // extendSnake();
+        currentScore++;
         getNewApple();
         tail++;
     }
@@ -73,6 +84,40 @@ function drawEverything(){
     // colorRect(canvas.width/2, canvas.height/2, blockSize, blockSize, 'green');
     drawSnake(snake);
     drawApple();
+    drawScoreBoard();
+}
+
+function drawScoreBoard(){
+    // const scoreBoardWidth = 200;
+    // const scoreBoardHeight = 80;
+    // const scoreBoardTopMargin = 50;
+
+    // // context.lineWidth = 2;
+    // // context.strokeStyle='white';
+    // // context.strokeRect(canvas.width - scoreBoardWidth/2, 200, scoreBoardWidth, scoreBoardHeight);
+
+    // canvasContext.beginPath();
+    // canvasContext.lineWidth = "2";
+    // canvasContext.strokeStyle = "white";
+    // canvasContext.rect(canvas.width/2-scoreBoardWidth/2, scoreBoardTopMargin, scoreBoardWidth, scoreBoardHeight);
+    // canvasContext.rect(canvas.width/2-scoreBoardWidth/2, scoreBoardTopMargin, scoreBoardWidth/2, scoreBoardHeight);
+    // canvasContext.stroke();
+    scoreBoardContext.fillStyle = 'white';
+    scoreBoardContext.fillRect(0, 0, scoreBoard.width, scoreBoard.height);
+    scoreBoardContext.fillStyle = 'black';
+    scoreBoardContext.font = '20px Lucida Console';
+
+    // textY = scoreBoardTopMargin + scoreBoardHeight/2 + 20;
+    // textX = canvas.width/2 - 15;
+
+    scoreBoardContext.fillText('Score: ' + currentScore, 10, 20);
+    scoreBoardContext.fillText('Best score: ' + bestScore, 10, 37);
+    // canvasContext.fillText(ballSpeedY, 100, 100);
+    d = new Date();
+    scoreBoardContext.fillText('Round time: ' + Math.round((d.getTime() - roundTime)/1000) + ' s', 250, 20);
+    scoreBoardContext.fillText('Total time: ' + Math.round((d.getTime() - globalTime)/1000) + ' s', 250, 37);
+
+    
 }
 
 function colorRect(leftX, topY, width, height, drawColor){
@@ -81,7 +126,7 @@ function colorRect(leftX, topY, width, height, drawColor){
 }
 
 function drawApple(){
-    colorRect(appleX, appleY, blockSize, blockSize, 'red');
+    colorRect(appleX, appleY, blockSize - 2, blockSize - 2, 'red');
 }
 
 function getNewApple(){
@@ -114,6 +159,12 @@ function moveSnake(){
     for(var i=0;i<snake.length;i++){
         colorRect(snake[i].x, snake[i].y, blockSize, blockSize, 'lime');
         if(snake[i].x == px && snake[i].y == py){
+            if(currentScore > bestScore){
+                bestScore = currentScore;
+            }
+            currentScore = 0;
+            d = new Date();
+            roundTime = d.getTime();
             tail = INITIAL_LENGHT;
         }
     }
